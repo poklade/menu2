@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="hu"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>Hol ebédeljek? – Kecskemét napi menük</title>
+<style>
+:root{--bg:#0b0f14;--panel:#141b24;--panel2:#1a2330;--ink:#f4f7fa;--muted:#aab6c3;--line:#2b3746;--accent:#ffc83d;--green:#4fe3a1;--shadow:0 6px 24px #0008}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:1200px;margin:auto;padding:24px 20px 40px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.eyebrow{font-size:12px;letter-spacing:.14em;color:var(--accent);font-weight:800}
+h1{margin:2px 0 4px;font-size:30px;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:14px}
+.tools{text-align:right;font-size:13px;color:var(--muted)}
+.tools a{color:var(--accent);font-weight:700;text-decoration:none}
+.tools a:hover{text-decoration:underline}
+button.refresh{margin-top:8px;display:inline-flex;gap:8px;align-items:center;background:var(--accent);color:#111;border:0;border-radius:10px;padding:10px 18px;font:inherit;font-weight:800;cursor:pointer}
+button.refresh:hover{filter:brightness(1.1)}
+button.refresh:focus-visible{outline:3px solid #fff;outline-offset:2px}
+button.refresh:disabled{opacity:.7;cursor:wait}
+button.refresh.spin .ico{display:inline-block;animation:rot .8s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.stamp{margin-top:6px}
+.count{margin:0 0 14px;color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+.card h2{margin:0;font-size:18px;color:var(--ink)}
+.addr{color:var(--muted);font-size:13px;margin:2px 0 10px}
+.addr a{color:var(--muted);text-decoration:none}
+.menu{list-style:none;margin:0 0 12px;padding:0}
+.menu li{padding:6px 0;border-top:1px solid var(--line);color:var(--ink)}
+.menu li:first-child{border-top:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:12px;color:var(--muted)}
+.price{background:#ffc83d22;color:var(--accent);border:1px solid #ffc83d66;border-radius:99px;padding:3px 10px;font-weight:800;font-size:13px}
+.hours{background:var(--panel2);border:1px solid var(--line);border-radius:99px;padding:3px 10px;color:#dbe4ee}
+.old{color:#ff9d8a}
+.msg{padding:30px;text-align:center;color:var(--muted)}
+footer{margin-top:26px;color:var(--muted);font-size:12px}
+@media(max-width:480px){.grid{grid-template-columns:1fr}h1{font-size:25px}.tools{text-align:left}}
+</style></head><body><div class="wrap">
+<header>
+ <div><div class="eyebrow">KECSKEMÉT · EBÉDTERVEZŐ</div><h1>Hol ebédeljek?</h1><div class="sub">Napi menük egy helyen</div></div>
+ <div class="tools">Adatforrás: <a href="https://holebedeljek.hu/" target="_blank" rel="noopener">holebedeljek.hu ↗</a><br>
+  <button class="refresh" id="refreshBtn" type="button"><span class="ico">↻</span> Frissítés</button>
+  <div class="stamp" id="stamp"></div></div>
+</header>
+<p class="count" id="count"></p>
+<main class="grid" id="list"><div class="msg">Betöltés…</div></main>
+<footer>Az adatok a forrásoldalról automatikusan, minden reggel 9:00 körül frissülnek. Az árak tájékoztató jellegűek.</footer>
+</div>
+<script>
+const FALLBACK = {"generated": "2026-11-17T00:00:00", "source": "https://holebedeljek.hu/", "restaurants": [{"name": "Aqua étterem", "address": "Csabay Géza krt. 5.", "phone": "+36 76 500 327", "price": 2400, "menu": "Legényfogóleves · Grízgaluskaleves · Joghurtos csirkecomb édesburgonyával · Töltött sertésborda burgonyapürével", "updated": "2026-11-15 18:03", "hours": ""}, {"name": "Bajor Étterem és Vendégház", "address": "Szent László krt. 19.", "phone": "+36 20 946 4616", "price": 2000, "menu": "Magyaros májgaluskaleves · Húsleves · Fetával és sonkával töltött karaj · Zöldbabfőzelék kolbásszal", "updated": "2026-11-14 08:00", "hours": ""}, {"name": "Bistro MoKambo Étterem", "address": "Bocskai utca 5.", "phone": "+36 76 328 681", "price": 1890, "menu": "Joghurtos gyümölcsleves · Tarhonyaleves · Gyros sült burgonyával · Rakott karfiol · Zúzapaprikás", "updated": "2026-11-16 09:20", "hours": "10:00–14:00"}, {"name": "Bográcskirály Falatozója", "address": "Szent István körút 23.", "phone": "+36 20 550 5611", "price": null, "menu": "Tárkonyos sertésraguleves · Brassói aprópecsenye · Szarvaspörkölt · Rántott húsok · Somlói galuska", "updated": "2026-11-15 18:17", "hours": "11:00–14:30"}, {"name": "Buborék Söröző és Étterem", "address": "Pákozdi csata utca 12/B", "phone": "+36 76 324 112", "price": 2000, "menu": "Pikáns húsgombócleves · Rántott karaj grillzöldséggel · Tejespite cseresznyeraguval", "updated": "2026-11-15 18:03", "hours": "11:00-tól"}, {"name": "Csalánosi Csárda – Belváros", "address": "Mária utca 1.", "phone": "+36 20 222 2288", "price": 3500, "menu": "Minestrone mozzarella golyókkal · Töltött sertésszűz édesburgonya-pürével · Rakott burgonya", "updated": "2026-11-15 18:03", "hours": "11:00–15:00"}, {"name": "Csaplár Vendéglő", "address": "Vacsi köz 21.", "phone": "+36 76 484 842", "price": 2100, "menu": "Burgonyaleves · Sóskamártás tükörtojással · Finomfőzelék virslirózsával", "updated": "2026-11-15 18:03", "hours": ""}, {"name": "Da Mauro", "address": "Ceglédi út 78.", "phone": "+36 30 090 3009", "price": 2400, "menu": "Jércemell-raguleves · Rántott sertéskaraj petrezselymes burgonyával · Mákos guba · Tiramisu", "updated": "2026-11-16 08:16", "hours": "11:00–14:30"}, {"name": "Dixie Gyorsétterem", "address": "Dobó István körút 1.", "phone": "+36 70 547 0759", "price": 2340, "menu": "Portugál sertésragu · Vaníliás krémleves · Többféle A–E főétel, csirke, sertés és vegetáriánus opció", "updated": "2026-11-16 08:17", "hours": ""}, {"name": "Glória étterem", "address": "Matkói út 99/B", "phone": "+36 30 398 2169", "price": 2600, "menu": "Gazdag májgombócleves · Bakonyi csirkeragu galuskával · Keménylebbencs · Rántott szelet", "updated": "2026-11-15 18:03", "hours": "11:00–15:00"}, {"name": "Gokart Hotel", "address": "Szent László krt. 64.", "phone": "+36 30 634 0522", "price": 3000, "menu": "Gölödin leves · Marhatokány jázminrizzsel · Heti magyaros és fitt ajánlatok", "updated": "2026-11-16 09:15", "hours": ""}, {"name": "Hírös Étkezde", "address": "Izsáki út 15.", "phone": "+36 76 505 973", "price": 2150, "menu": "Pikáns burgonyaleves · Zöldborsós sertésszelet · Ropogós csirkeszárny · Lasagne", "updated": "2026-11-15 17:20", "hours": ""}, {"name": "Jakó Cukrászda", "address": "Nagykőrösi utca 2.", "phone": "+36 76 900 155", "price": 2700, "menu": "Tojásleves · Roston sült csirkecomb párolt brokkolival és jázminrizzsel", "updated": "2026-11-13 09:00", "hours": ""}, {"name": "Kecskeméti Csárda és Borház", "address": "Kölcsey utca 7.", "phone": "+36 70 453 8910", "price": 2990, "menu": "Székelygulyás · Tárkonyos szárnyasraguleves · Cigánypecsenye · Rántott sajt", "updated": "2026-11-15 18:17", "hours": "11:00–15:00"}, {"name": "Kishomok Bisztró", "address": "Kossuth tér 3.", "phone": "+36 70 466 5619", "price": 2000, "menu": "Sertésraguleves · Búbos hús vegyes körettel · Túrókrémes palacsinta", "updated": "2026-11-01 15:22", "hours": ""}, {"name": "Max Pizzéria és Étterem", "address": "Széchenyi tér 9.", "phone": "+36 76 321 600", "price": 2000, "menu": "Legényfogó leves · Sajttal töltött halfilé majonézes tésztasalátával", "updated": "2026-11-15 18:03", "hours": ""}, {"name": "Muszály Vendéglő", "address": "Újerdő utca 27.", "phone": "+36 30 937 0811", "price": 2400, "menu": "Gyümölcsleves · Csirkepörkölt túrós galuskával · Rablóhús · Rakott zöldbab", "updated": "2026-11-16 08:05", "hours": ""}, {"name": "Nagybendő vendéglője", "address": "Vacsihegy tanya 1/C", "phone": "+36 76 401 358", "price": 2100, "menu": "Citromos raguleves · Sajtkrémleves · Rakott karfiol · Bolognai sertésborda", "updated": "2026-11-16 09:36", "hours": "10:30–14:30"}, {"name": "Retro Büfé", "address": "Vacsihegy 100/A", "phone": "+36 76 329 012", "price": 2400, "menu": "Tarhonyaleves · Fokhagymás brassói aprópecsenye savanyúsággal", "updated": "2026-11-15 17:08", "hours": "11:00–14:00"}, {"name": "Saloon Pizzéria", "address": "Akadémia körút 69.", "phone": "+36 76 495 437", "price": 1900, "menu": "Májgombócleves · Mustáros sertésflekken csónakburgonyával és csalamádéval", "updated": "2026-11-16 09:04", "hours": ""}, {"name": "Sutus Jófalat Vendéglő", "address": "Dózsa György út 13.", "phone": "+36 76 324 432", "price": 1900, "menu": "Húsleves · Jókai bableves · Lencsefőzelék · Sajtos csirkemell · Brassói aprópecsenye", "updated": "2026-11-14 08:15", "hours": ""}, {"name": "Szegediék vendéglője", "address": "Hosszú utca 27.", "phone": "+36 70 600 2966", "price": 2400, "menu": "Sütőtökkrémleves · Tárkonyos raguleves · Chilis bab · Mustáros flekken · Cheddaros csirkemell", "updated": "2026-11-16 08:20", "hours": ""}, {"name": "Veyron Ebédlő és Rendezvényház", "address": "Horog utca 9.", "phone": "+36 76 497 668", "price": 2700, "menu": "Karfiolleves · Sertéskaraj gombamártással · Csirkemell zöldfűszeres mártással", "updated": "2026-11-16 08:00", "hours": "11:30–15:00"}, {"name": "Vincent Restaurant & Pastry", "address": "Izsáki út 3.", "phone": "+36 30 570 0518", "price": 5080, "menu": "Frankfurti leves · Teriyaki húsgolyó meleg lencsesalátával", "updated": "2026-11-16 08:15", "hours": "11:30–15:00"}, {"name": "Wernesgrüner Étterem", "address": "Aradi vértanúk tere 6.", "phone": "+36 70 442 3202", "price": 2250, "menu": "Tanyasi jérceleves lúdgégetésztával · Szűzérmék erdeigomba-mártásban · Zöldséges rizses csirke", "updated": "2026-11-15 08:10", "hours": "11:30–14:00"}]};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>n==null?'':Number(n).toLocaleString('hu-HU')+' Ft';
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+
+function render(d){
+  const list=(d.restaurants||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'hu'));
+  document.getElementById('count').textContent=list.length+' étterem';
+  const t=today();
+  document.getElementById('list').innerHTML=list.length?list.map(x=>{
+    const items=String(x.menu||'').split(' · ').filter(Boolean).map(i=>'<li>'+esc(i)+'</li>').join('')||'<li>Nincs megadott menü</li>';
+    const upd=x.updated?`<span class="${x.updated.slice(0,10)<t?'old':''}">Frissítve: ${esc(x.updated)}</span>`:'';
+    const tel=x.phone?` · <a href="tel:${esc(x.phone.replace(/[^+\d]/g,''))}">${esc(x.phone)}</a>`:'';
+    return `<article class="card"><h2>${esc(x.name)}</h2><div class="addr">${esc(x.address)}${tel}</div><ul class="menu">${items}</ul><div class="meta">${x.price!=null?`<span class="price">${fmt(x.price)}</span>`:''}${x.hours?`<span class="hours">${esc(x.hours)}</span>`:''}${upd}</div></article>`;
+  }).join(''):'<div class="msg">Nincs megjeleníthető étterem.</div>';
+  const g=d.generated?new Date(d.generated):null;
+  document.getElementById('stamp').textContent='Adatok állapota: '+(g&&!isNaN(g)?g.toLocaleString('hu-HU',{dateStyle:'medium',timeStyle:'short'}):'ismeretlen')
+    +' · Oldal betöltve: '+new Date().toLocaleTimeString('hu-HU',{hour:'2-digit',minute:'2-digit'});
+}
+
+async function load(){
+  try{
+    const r=await fetch('menu.json?_='+Date.now(),{cache:'no-store'});
+    if(!r.ok)throw new Error(r.status);
+    render(await r.json());
+  }catch(e){
+    if(FALLBACK)render(FALLBACK);
+    else document.getElementById('list').innerHTML='<div class="msg">Nem sikerült betölteni az adatokat.</div>';
+  }
+}
+
+document.getElementById('refreshBtn').addEventListener('click',async function(){
+  this.disabled=true;this.classList.add('spin');
+  await load();
+  this.disabled=false;this.classList.remove('spin');
+});
+
+// Automatikus frissítés minden reggel 9:00-kor (helyi idő szerint)
+const loadedTs=Date.now();
+const nineAt=(off)=>{const n=new Date(),d=new Date(n.getFullYear(),n.getMonth(),n.getDate(),9,0,0,0);if(off===1&&d<=n)d.setDate(d.getDate()+1);if(off===-1&&d>n)d.setDate(d.getDate()-1);return d};
+function auto(){load();}
+setTimeout(()=>location.reload(),nineAt(1)-Date.now()+60000); // 1 perc késleltetés, hogy a szerveroldali frissítés előbb lefusson
+const stale=()=>loadedTs<nineAt(-1).getTime()+60000&&Date.now()>=nineAt(-1).getTime()+60000;
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&stale())location.reload()});
+window.addEventListener('focus',()=>{if(stale())location.reload()});
+load();
+</script></body></html>
